@@ -21,6 +21,7 @@
             <version>5.10.2</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -31,6 +32,7 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>2.0.17</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -53,19 +55,13 @@
 
         <dependency>
             <groupId>org.opendaylight.yangtools</groupId>
-            <artifactId>yang-model-spi</artifactId>
-            <version>14.0.22</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.opendaylight.yangtools</groupId>
-            <artifactId>yang-model-util</artifactId>
-            <version>14.0.22</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.opendaylight.yangtools</groupId>
             <artifactId>yang-data-api</artifactId>
+            <version>14.0.22</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>yang-model-spi</artifactId>
             <version>14.0.22</version>
         </dependency>
 
@@ -87,17 +83,7 @@
             <version>14.0.22</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.opendaylight.yangtools</groupId>
-            <artifactId>rfc8819-parser-support</artifactId>
-            <version>14.0.22</version>
-        </dependency>
 
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.11.0</version>
-        </dependency>
     </dependencies>
 
 </project>

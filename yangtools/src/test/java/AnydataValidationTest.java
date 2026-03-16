@@ -18,7 +18,7 @@ public class AnydataValidationTest {
 
     @Test
     void testAnydataValidation() throws Exception {
-        List<String> schemaFile = List.of("../yang/anydata-test.yang");
+        List<String> schemaFile = List.of("../yang/anydata-test.yang", "../yang/example.yang");
         EffectiveModelContext schema = YangToolsUtils.loadSchema(schemaFile);
         assertNotNull(schema);
 

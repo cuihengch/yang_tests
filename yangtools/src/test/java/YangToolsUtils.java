@@ -35,8 +35,9 @@ public final class YangToolsUtils {
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("Module not found: " + moduleName));
 
-        return module.findFirstEffectiveSubstatement(StructureEffectiveStatement.class)
+        return module.streamEffectiveSubstatements(StructureEffectiveStatement.class)
                 .filter(stmt -> stmt.argument().getLocalName().equals(structureName))
+                .findFirst()
                 .orElseThrow(() -> new IllegalStateException(
                         "Structure not found: " + moduleName + ":" + structureName));
     }
