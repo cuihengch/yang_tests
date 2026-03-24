@@ -13,4 +13,12 @@ public class SchemaValidationTest {
         EffectiveModelContext schema = YangToolsUtils.loadSchema(schemaFile);
         assertNotNull(schema);
     }
+
+    @Test
+    void testLoadInvalidSchema() throws Exception {
+        assertThrows(Exception.class, () -> {
+            List<String> schemaFile = List.of("../yang/bad-example.yang");
+            EffectiveModelContext schema = YangToolsUtils.loadSchema(schemaFile);
+        });
+    }
 }
