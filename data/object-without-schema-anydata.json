@@ -1,0 +1,11 @@
+{
+  "data": {
+    "anydata-example:super-container": {
+      "anydata-example:payload": {
+        "foo": {
+          "bar": "123"
+        }
+      }
+    }
+  }
+}
