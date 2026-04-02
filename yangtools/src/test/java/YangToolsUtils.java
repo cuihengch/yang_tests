@@ -1,55 +1,36 @@
-import org.opendaylight.yangtools.rfc8791.model.api.StructureEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.EffectiveStatementInference;
 import org.opendaylight.yangtools.yang.model.spi.source.FileYangTextSource;
-import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
 
-import java.nio.file.Paths;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.ServiceLoader;
 
 public final class YangToolsUtils {
     public static EffectiveModelContext loadSchema(List<String> files) throws Exception {
-        YangParserFactory factory = ServiceLoader.load(YangParserFactory.class)
+        if (files == null || files.isEmpty()) {
+            throw new IllegalArgumentException("At least one YANG file must be provided");
+        }
+
+        var factory = ServiceLoader.load(YangParserFactory.class)
                 .findFirst()
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalStateException(
+                        "No YangParserFactory found — check yang-parser-rfc7950 is on the classpath"));
 
         var parser = factory.createParser();
 
         for (String file : files) {
-            var f = Paths.get(file).toAbsolutePath();
-            parser.addSource(new FileYangTextSource(f));
+            var path = Path.of(file).toAbsolutePath().normalize();
+            if (!Files.exists(path)) {
+                throw new IllegalArgumentException("YANG file not found: " + path);
+            }
+            parser.addSource(new FileYangTextSource(path));
         }
 
         return parser.buildEffectiveModel();
     }
 
-    public static StructureEffectiveStatement findStructure(
-            EffectiveModelContext schemaContext,
-            String moduleName,
-            String structureName
-    ) {
-        var module = schemaContext.getModuleStatements().values().stream()
-                .filter(m -> m.argument().getLocalName().equals(moduleName))
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("Module not found: " + moduleName));
-
-        return module.streamEffectiveSubstatements(StructureEffectiveStatement.class)
-                .filter(stmt -> stmt.argument().getLocalName().equals(structureName))
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException(
-                        "Structure not found: " + moduleName + ":" + structureName));
-    }
-
-    public static EffectiveStatementInference toInference(
-            EffectiveModelContext schemaContext,
-            StructureEffectiveStatement structure
-    ) {
-        var stack = SchemaInferenceStack.of(schemaContext);
-        stack.enterSchemaTree(structure.argument());
-        return stack.toInference();
-    }
 
 }
 

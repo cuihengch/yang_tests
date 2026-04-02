@@ -12,6 +12,7 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <yangtools.version>15.0.3-SNAPSHOT</yangtools.version>
     </properties>
 
     <dependencies>
@@ -36,53 +37,75 @@
         </dependency>
 
         <dependency>
-            <groupId>org.opendaylight.yangtools</groupId>
-            <artifactId>yang-parser-api</artifactId>
-            <version>14.0.22</version>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.11.0</version>
         </dependency>
 
         <dependency>
             <groupId>org.opendaylight.yangtools</groupId>
-            <artifactId>yang-parser-impl</artifactId>
-            <version>14.0.22</version>
+            <artifactId>yang-parser-rfc7950</artifactId>
+            <version>${yangtools.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>yang-parser-reactor</artifactId>
+            <version>${yangtools.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>yang-repo-fs</artifactId>
+            <version>${yangtools.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>yang-repo-spi</artifactId>
+            <version>${yangtools.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.opendaylight.yangtools</groupId>
             <artifactId>yang-model-api</artifactId>
-            <version>14.0.22</version>
+            <version>${yangtools.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.opendaylight.yangtools</groupId>
-            <artifactId>yang-data-api</artifactId>
-            <version>14.0.22</version>
+            <artifactId>rfc7952-parser-support</artifactId>
+            <version>${yangtools.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.opendaylight.yangtools</groupId>
-            <artifactId>yang-model-spi</artifactId>
-            <version>14.0.22</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.opendaylight.yangtools</groupId>
-            <artifactId>yang-data-impl</artifactId>
-            <version>14.0.22</version>
+            <artifactId>rfc8040-parser-support</artifactId>
+            <version>${yangtools.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.opendaylight.yangtools</groupId>
             <artifactId>yang-data-codec-gson</artifactId>
-            <version>14.0.22</version>
+            <version>${yangtools.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.opendaylight.yangtools</groupId>
-            <artifactId>rfc8791-model-api</artifactId>
-            <version>14.0.22</version>
+            <artifactId>yang-data-impl</artifactId>
+            <version>${yangtools.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>yang-xpath-impl</artifactId>
+            <version>${yangtools.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>yang-test-util</artifactId>
+            <version>${yangtools.version}</version>
+        </dependency>
 
     </dependencies>
 
