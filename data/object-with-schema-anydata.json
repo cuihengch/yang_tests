@@ -1,10 +1,8 @@
 {
-  "data": {
-    "anydata-example:super-container": {
-      "anydata-example:payload": {
-        "example:system": {
-          "hostname": "routerX"
-        }
+  "anydata-example:super-container": {
+    "anydata-example:payload": {
+      "example:system": {
+        "hostname": "routerX"
       }
     }
   }

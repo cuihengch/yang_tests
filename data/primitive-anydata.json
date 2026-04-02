@@ -1,7 +1,5 @@
 {
-  "data": {
-    "anydata-example:super-container": {
-      "anydata-example:payload": 1
-    }
+  "anydata-example:super-container": {
+    "anydata-example:payload": 1
   }
 }
