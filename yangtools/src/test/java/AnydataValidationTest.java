@@ -17,8 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class AnydataValidationTest {
 
     @Test
-    void testAnydataValidation() throws Exception {
-        List<String> schemaFile = List.of("../yang/anydata-test.yang", "../yang/example.yang");
+    void testPrimitiveTypeAnydata() throws Exception {
+        List<String> schemaFile = List.of("../yang/anydata/anydata-container-example.yang");
         EffectiveModelContext schema = YangToolsUtils.loadSchema(schemaFile);
         assertNotNull(schema);
 
@@ -33,7 +33,55 @@ public class AnydataValidationTest {
         assertDoesNotThrow(() -> {
             try (JsonReader reader = new JsonReader(
                     new InputStreamReader(
-                            Files.newInputStream(Paths.get("../data/anydata.json"))
+                            Files.newInputStream(Paths.get("../data/primitive-anydata.json"))
+                    ))) {
+                parser.parse(reader);
+            }
+        });
+    }
+
+    @Test
+    void testObjectWithSchemaAnydata() throws Exception {
+        List<String> schemaFile = List.of("../yang/anydata/anydata-container-example.yang","../yang/example.yang");
+        EffectiveModelContext schema = YangToolsUtils.loadSchema(schemaFile);
+        assertNotNull(schema);
+
+        NormalizationResultHolder resultHolder = new NormalizationResultHolder();
+        var writer = ImmutableNormalizedNodeStreamWriter.from(resultHolder);
+
+        var parser = JsonParserStream.create(
+                writer,
+                JSONCodecFactorySupplier.RFC7951.getShared(schema)
+        );
+
+        assertDoesNotThrow(() -> {
+            try (JsonReader reader = new JsonReader(
+                    new InputStreamReader(
+                            Files.newInputStream(Paths.get("../data/object-with-schema-anydata.json"))
+                    ))) {
+                parser.parse(reader);
+            }
+        });
+    }
+
+    @Test
+    void testObjectWithoutSchemaAnydata() throws Exception {
+        List<String> schemaFile = List.of("../yang/anydata/anydata-container-example.yang");
+        EffectiveModelContext schema = YangToolsUtils.loadSchema(schemaFile);
+        assertNotNull(schema);
+
+        NormalizationResultHolder resultHolder = new NormalizationResultHolder();
+        var writer = ImmutableNormalizedNodeStreamWriter.from(resultHolder);
+
+        var parser = JsonParserStream.create(
+                writer,
+                JSONCodecFactorySupplier.RFC7951.getShared(schema)
+        );
+
+        assertDoesNotThrow(() -> {
+            try (JsonReader reader = new JsonReader(
+                    new InputStreamReader(
+                            Files.newInputStream(Paths.get("../data/object-without-schema-anydata.json"))
                     ))) {
                 parser.parse(reader);
             }
