@@ -1,9 +1,9 @@
 {
     "data": {
         "xpath-test:top-container": {
-            "child-container": {
-                "value1": "value",
-                "value2": 42
+            "xpath-test:child-container": {
+                "xpath-test:value1": "value",
+                "xpath-test:value2": 42
             }
         }
     }
