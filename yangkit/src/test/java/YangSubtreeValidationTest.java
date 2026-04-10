@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class YangSubtreeValidationTest {
 
     @Test
-    void minimalXpathTest() throws Exception {
+    void minimalSubtreeXpathTest() throws Exception {
         YangSchemaContext schemaContext = YangkitUtils.loadSchema("../yang/xpath");
         JsonNode validData = YangkitUtils.loadJson("../data/xpath-test-valid.json");
         assertTrue(schemaContext.validate().isOk());
