@@ -1,0 +1,29 @@
+module semantic-error-example {
+  yang-version 1.1;
+  namespace "urn:example:semantic-error";
+  prefix err;
+
+  description
+    "A YANG module that is syntactically valid (parses fine)
+     but contains semantic errors (fails validation).";
+
+  revision 2026-04-14 {
+    description "Initial version.";
+  }
+
+  container system {
+    leaf explicit-reference {
+      type leafref {
+        // ERROR A: The path points to a non-existent leaf.
+        path "/err:system/does-not-exist";
+      }
+    }
+
+    leaf conflicting-default {
+      type uint8;
+      // ERROR B: The default value '300000' is out of bounds for uint8 (max 255).
+      default 300000;
+    }
+  }
+}
+

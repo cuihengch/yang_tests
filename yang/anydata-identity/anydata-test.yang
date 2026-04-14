@@ -1,0 +1,8 @@
+module anydata-test {
+  yang-version 1.1;
+  namespace "urn:anydata:test";
+  prefix ad;
+  container root {
+    anydata payload;
+  }
+}

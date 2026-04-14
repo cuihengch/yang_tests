@@ -1,21 +1,15 @@
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.dom4j.DocumentException;
-import org.jaxen.NamespaceContext;
+// TODO: Heng - would be good to clean up the unused imports
 import org.junit.jupiter.api.Test;
 import org.yangcentral.yangkit.common.api.AbsolutePath;
 import org.yangcentral.yangkit.common.api.NamespaceContextDom4j;
-import org.yangcentral.yangkit.common.api.validate.ValidatorResult;
 import org.yangcentral.yangkit.common.api.validate.ValidatorResultBuilder;
-import org.yangcentral.yangkit.data.api.model.YangData;
 import org.yangcentral.yangkit.data.api.model.YangDataDocument;
-import org.yangcentral.yangkit.data.codec.json.JsonCodecUtil;
 import org.yangcentral.yangkit.data.codec.json.YangDataDocumentJsonParser;
 import org.yangcentral.yangkit.model.api.schema.YangSchemaContext;
-import org.yangcentral.yangkit.parser.YangParserException;
 import org.yangcentral.yangkit.xpath.impl.YangXPathImpl;
 
-import java.io.IOException;
 import java.net.URI;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,6 +29,17 @@ public class YangSubtreeValidationTest {
 
         var dataWrappedChildContainer = new ObjectMapper().createObjectNode();
         dataWrappedChildContainer.putIfAbsent("data", childContainer);
+        /* TODO: Heng - dataWrappedChildContainer is like
+            {
+            "data": {
+                "xpath-test:child-container": {
+                       "xpath-test:value1":"value",
+                       "xpath-test:value2":42
+                }
+             }
+            }
+            and last assert will be failed.
+        */
 
         System.out.println(dataWrappedChildContainer);
 
@@ -55,6 +60,7 @@ public class YangSubtreeValidationTest {
         YangXPathImpl xpath = new YangXPathImpl("/xt:top-container/xt:child-container");
         xpath.addNamespace("xt", "urn:xpath:test");
 
+        // TODO: Heng - assert is false, it seems it still needs top-container as root to be true.
         assertTrue(build.isOk());
     }
 

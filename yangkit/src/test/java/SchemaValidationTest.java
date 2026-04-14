@@ -21,9 +21,19 @@ public class SchemaValidationTest {
 
     @Test
     void testLoadInvalidSchema() {
-        assertThrows(Exception.class, () -> {
+        assertThrows(YangParserException.class, () -> {
             String yang = "../yang/bad-example.yang";
             YangSchemaContext schema = YangkitUtils.loadSchema(yang);
         });
+    }
+
+    @Test
+    void testLoadInvalidSchemaSemantics() throws DocumentException, IOException, YangParserException {
+        // Tests a YANG file that is syntactically correct but has semantic errors.
+        YangSchemaContext schema = YangkitUtils.loadSchema("../yang/semantic-error-example.yang");
+        assertNotNull(schema);
+
+        ValidatorResult schemaValidation = YangkitUtils.validateSchema(schema);
+        assertFalse(schemaValidation.isOk(), "Validation should fail because of semantic modeling errors");
     }
 }
