@@ -1,3 +1,4 @@
+import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.spi.source.FileYangTextSource;
 import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
@@ -70,6 +71,14 @@ public final class YangToolsUtils {
         }
 
         return parser.buildEffectiveModel();
+    }
+
+    public static void printDataTree(NormalizedNode node) {
+        if (node == null) {
+            System.out.println("<null>");
+            return;
+        }
+        System.out.println(node.prettyTree().get());
     }
 
 
