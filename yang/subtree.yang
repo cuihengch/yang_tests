@@ -1,0 +1,22 @@
+module example {
+    yang-version 1.1;
+    namespace "urn:example";
+    prefix ex;
+
+    container root {
+        container content {
+            container subscription {
+                leaf name {
+                    type string;
+                }
+                leaf id {
+                    type uint8;
+                }
+            }
+        }
+        leaf test {
+            type string;
+            mandatory true;
+        }
+    }
+}

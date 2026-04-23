@@ -10,5 +10,8 @@ module yang-transformation {
         leaf num {
             type uint8;
         }
+        leaf value-to-update {
+            type uint8;
+        }
     }
 }
