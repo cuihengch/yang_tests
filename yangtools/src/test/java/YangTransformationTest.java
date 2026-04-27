@@ -32,7 +32,7 @@ public class YangTransformationTest {
     }
 
     @Test
-    void updateValueTest() throws Exception {
+    void addDataTest() throws Exception {
         List<String> schemaFiles = List.of("../yang/yang-transformation.yang");
         EffectiveModelContext schemaContext = YangToolsUtils.loadSchema(schemaFiles);
         assertNotNull(schemaContext);
@@ -94,4 +94,69 @@ public class YangTransformationTest {
                 dataTree.takeSnapshot().readNode(fooPath).orElseThrow();
         YangToolsUtils.printDataTree(updatedFoo);
     }
+
+    @Test
+    void updateDataTest() throws Exception {
+        List<String> schemaFiles = List.of("../yang/yang-transformation.yang");
+        EffectiveModelContext schemaContext = YangToolsUtils.loadSchema(schemaFiles);
+        assertNotNull(schemaContext);
+
+        NormalizationResultHolder resultHolder = new NormalizationResultHolder();
+        var writer = ImmutableNormalizedNodeStreamWriter.from(resultHolder);
+
+        var parser = JsonParserStream.create(
+                writer,
+                JSONCodecFactorySupplier.RFC7951.getShared(schemaContext)
+        );
+
+        try (JsonReader reader = new JsonReader(
+                new InputStreamReader(
+                        Files.newInputStream(Paths.get("../data/yang_transformation_bis.json"))
+                ))) {
+            parser.parse(reader);
+        }
+
+        assertNotNull(resultHolder.getResult());
+
+        var normalizationResult = resultHolder.getResult();
+        var rootNode = normalizationResult.data();
+        System.out.println("=== Parsed JSON ===");
+        YangToolsUtils.printDataTree(rootNode);
+        ContainerNode fooNode = assertInstanceOf(ContainerNode.class, rootNode);
+
+        DataTree dataTree = newOperationalTree(schemaContext);
+
+        QName fooQName = QName.create("urn:yang:transformation", "foo").intern();
+        QName valToUpdateQName = QName.create("urn:yang:transformation", "value-to-update").intern();
+
+        YangInstanceIdentifier fooPath =
+                YangInstanceIdentifier.of(new YangInstanceIdentifier.NodeIdentifier(fooQName));
+        YangInstanceIdentifier numPath =
+                fooPath.node(new YangInstanceIdentifier.NodeIdentifier(valToUpdateQName));
+
+        DataTreeModification initMod = dataTree.takeSnapshot().newModification();
+        initMod.write(fooPath, fooNode);
+        initMod.ready();
+        dataTree.validate(initMod);
+        dataTree.commit(dataTree.prepare(initMod));
+
+        LeafNode<Integer> valToUpdateLeaf = ImmutableNodes.leafNode(valToUpdateQName, 3);
+
+        DataTreeModification updateMod = dataTree.takeSnapshot().newModification();
+        updateMod.write(numPath, valToUpdateLeaf);
+        updateMod.ready();
+        dataTree.validate(updateMod);
+        dataTree.commit(dataTree.prepare(updateMod));
+
+        NormalizedNode readNode =
+                dataTree.takeSnapshot().readNode(numPath).orElseThrow();
+
+        LeafNode<?> leafNode = assertInstanceOf(LeafNode.class, readNode);
+        assertEquals(3, leafNode.body());
+        System.out.println("=== DataTree after update ===");
+        NormalizedNode updatedFoo =
+                dataTree.takeSnapshot().readNode(fooPath).orElseThrow();
+        YangToolsUtils.printDataTree(updatedFoo);
+    }
+
 }

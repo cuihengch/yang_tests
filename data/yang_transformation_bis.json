@@ -1,5 +1,6 @@
 {
   "yang-transformation:foo": {
-    "val": "hello"
+    "val": "hello",
+    "value-to-update": 42
   }
 }
