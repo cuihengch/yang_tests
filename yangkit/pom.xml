@@ -66,6 +66,11 @@
             <artifactId>xercesImpl</artifactId>
             <version>2.12.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime</artifactId>
+            <version>4.11.1</version>
+        </dependency>
     </dependencies>
 
 </project>
