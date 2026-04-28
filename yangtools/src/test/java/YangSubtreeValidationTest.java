@@ -8,11 +8,14 @@ import org.opendaylight.yangtools.yang.data.codec.gson.JSONCodecFactorySupplier;
 import org.opendaylight.yangtools.yang.data.codec.gson.JsonParserStream;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.impl.schema.NormalizationResultHolder;
+import org.opendaylight.yangtools.yang.data.spi.node.MandatoryLeafEnforcer;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTree;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeConfiguration;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeFactory;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeModification;
 import org.opendaylight.yangtools.yang.data.tree.dagger.ReferenceDataTreeFactoryModule;
+import org.opendaylight.yangtools.yang.data.util.DataSchemaContextTree;
+import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
@@ -86,6 +89,22 @@ public class YangSubtreeValidationTest {
                 dataTree.takeSnapshot().readNode(subscriptionPath).orElseThrow();
 
         ContainerNode validatedSubscription = assertInstanceOf(ContainerNode.class, readNode);
+
+        var subscriptionSchemaContext = DataSchemaContextTree.from(schemaContext)
+                .findChild(subscriptionPath)
+                .orElseThrow();
+
+        DataNodeContainer subscriptionSchema = assertInstanceOf(
+                DataNodeContainer.class,
+                subscriptionSchemaContext.dataSchemaNode()
+        );
+
+        MandatoryLeafEnforcer enforcer = MandatoryLeafEnforcer.forContainer(
+                subscriptionSchema,
+                true
+        );
+
+        assertNull(enforcer);
 
         System.out.println("=== Validated subtree ===");
         YangToolsUtils.printDataTree(validatedSubscription);
