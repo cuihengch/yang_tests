@@ -15,6 +15,20 @@
         <yangtools.version>16.0.0-SNAPSHOT</yangtools.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>opendaylight-snapshot</id>
+            <name>OpenDaylight Snapshot Repository</name>
+            <url>https://nexus.opendaylight.org/content/repositories/opendaylight.snapshot/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -123,6 +137,18 @@
             <artifactId>junit</artifactId>
             <version>4.13.2</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>yang-common</artifactId>
+            <version>${yangtools.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>yang-data-api</artifactId>
+            <version>${yangtools.version}</version>
         </dependency>
 
     </dependencies>
