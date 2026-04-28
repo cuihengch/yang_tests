@@ -7,12 +7,12 @@ import org.opendaylight.yangtools.yang.data.impl.schema.NormalizationResultHolde
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AnydataValidationTest {
 
@@ -83,6 +83,64 @@ public class AnydataValidationTest {
                     new InputStreamReader(
                             Files.newInputStream(Paths.get("../data/object-without-schema-anydata.json"))
                     ))) {
+                parser.parse(reader);
+            }
+        });
+    }
+
+    @Test
+    void testEmptyAnydata() throws Exception {
+        List<String> schemaFile = List.of("../yang/anydata/anydata-example.yang");
+        EffectiveModelContext schema = YangToolsUtils.loadSchema(schemaFile);
+        assertNotNull(schema);
+
+        String jsonInput = """
+                {
+                  "anydata-example:super-container": {
+                    "anydata-example:payload": {}
+                  }
+                }
+                """;
+
+        NormalizationResultHolder resultHolder = new NormalizationResultHolder();
+        var writer = ImmutableNormalizedNodeStreamWriter.from(resultHolder);
+
+        var parser = JsonParserStream.create(
+                writer,
+                JSONCodecFactorySupplier.RFC7951.getShared(schema)
+        );
+
+        assertThrows(Exception.class, () -> {
+            try (JsonReader reader = new JsonReader(new StringReader(jsonInput))) {
+                parser.parse(reader);
+            }
+        });
+    }
+
+    @Test
+    void testNullAnydata() throws Exception {
+        List<String> schemaFile = List.of("../yang/anydata/anydata-example.yang");
+        EffectiveModelContext schema = YangToolsUtils.loadSchema(schemaFile);
+        assertNotNull(schema);
+
+        String jsonInput = """
+                {
+                  "anydata-example:super-container": {
+                    "anydata-example:payload": null
+                  }
+                }
+                """;
+
+        NormalizationResultHolder resultHolder = new NormalizationResultHolder();
+        var writer = ImmutableNormalizedNodeStreamWriter.from(resultHolder);
+
+        var parser = JsonParserStream.create(
+                writer,
+                JSONCodecFactorySupplier.RFC7951.getShared(schema)
+        );
+
+        assertThrows(Exception.class, () -> {
+            try (JsonReader reader = new JsonReader(new StringReader(jsonInput))) {
                 parser.parse(reader);
             }
         });
