@@ -84,10 +84,10 @@ public class YangSubtreeValidationTest {
         ContainerDataJsonCodec codec = new ContainerDataJsonCodec((Container) subscription);
         JsonNode validData = YangkitUtils.loadJson("../data/subtree.json");
         ValidatorResultBuilder resultBuilder = new ValidatorResultBuilder();
-        var data = codec.deserialize(validData, resultBuilder);
-        data.setPath(new AbsolutePath());
-        resultBuilder.merge(JsonCodecUtil.buildChildrenData(data, validData));
-        resultBuilder.merge(data.validate());
+        var containerData = codec.deserialize(validData, resultBuilder);
+        containerData.setPath(new AbsolutePath());
+        resultBuilder.merge(JsonCodecUtil.buildChildrenData(containerData, validData));
+        resultBuilder.merge(containerData.validate());
         var result = resultBuilder.build();
         assertTrue(result.isOk());
     }
