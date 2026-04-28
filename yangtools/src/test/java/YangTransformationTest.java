@@ -26,10 +26,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class YangTransformationTest {
 
-    private static DataTree newOperationalTree(EffectiveModelContext schemaContext) {
-        DataTreeFactory factory = ReferenceDataTreeFactoryModule.provideDataTreeFactory();
-        return factory.create(DataTreeConfiguration.DEFAULT_OPERATIONAL, schemaContext);
-    }
 
     @Test
     void addDataTest() throws Exception {
@@ -60,7 +56,7 @@ public class YangTransformationTest {
         YangToolsUtils.printDataTree(rootNode);
         ContainerNode fooNode = assertInstanceOf(ContainerNode.class, rootNode);
 
-        DataTree dataTree = newOperationalTree(schemaContext);
+        DataTree dataTree = YangToolsUtils.newOperationalTree(schemaContext);
 
         QName fooQName = QName.create("urn:yang:transformation", "foo").intern();
         QName numQName = QName.create("urn:yang:transformation", "num").intern();
@@ -124,7 +120,7 @@ public class YangTransformationTest {
         YangToolsUtils.printDataTree(rootNode);
         ContainerNode fooNode = assertInstanceOf(ContainerNode.class, rootNode);
 
-        DataTree dataTree = newOperationalTree(schemaContext);
+        DataTree dataTree = YangToolsUtils.newOperationalTree(schemaContext);
 
         QName fooQName = QName.create("urn:yang:transformation", "foo").intern();
         QName valToUpdateQName = QName.create("urn:yang:transformation", "value-to-update").intern();

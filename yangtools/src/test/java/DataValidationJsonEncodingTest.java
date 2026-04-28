@@ -13,6 +13,7 @@ import org.opendaylight.yangtools.yang.data.tree.api.DataTreeModification;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeSnapshot;
 import org.opendaylight.yangtools.yang.data.tree.impl.ReferenceDataTreeFactory;
 import org.opendaylight.yangtools.yang.data.util.DataSchemaContextTree;
+import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
@@ -124,4 +125,40 @@ public class DataValidationJsonEncodingTest {
                 () -> enforcer.enforceOnData(data)
         );
     }
+
+    @Test
+    void testInvalidMustValidation() throws Exception {
+        EffectiveModelContext schema = YangToolsUtils.loadSchema(
+                List.of("../yang/must-test.yang")
+        );
+
+        NormalizationResultHolder resultHolder = new NormalizationResultHolder();
+        var writer = ImmutableNormalizedNodeStreamWriter.from(resultHolder);
+
+        var parser = JsonParserStream.create(
+                writer,
+                JSONCodecFactorySupplier.RFC7951.getShared(schema)
+        );
+
+        assertDoesNotThrow(() -> {
+            try (JsonReader reader = new JsonReader(
+                    new InputStreamReader(
+                            Files.newInputStream(Paths.get("../data/invalid-must-bis.json"))
+                    ))) {
+                parser.parse(reader);
+            }
+        });
+
+        var data = resultHolder.getResult().data();
+        DataTree dataTree = YangToolsUtils.newOperationalTree(schema);
+
+        YangInstanceIdentifier path = YangInstanceIdentifier.of(data.name());
+
+        var modification = dataTree.takeSnapshot().newModification();
+        modification.write(path, data);
+        modification.ready();
+
+        assertThrows(Exception.class, () -> dataTree.validate(modification));
+    }
+
 }

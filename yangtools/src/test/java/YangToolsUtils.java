@@ -1,4 +1,8 @@
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.data.tree.api.DataTree;
+import org.opendaylight.yangtools.yang.data.tree.api.DataTreeConfiguration;
+import org.opendaylight.yangtools.yang.data.tree.api.DataTreeFactory;
+import org.opendaylight.yangtools.yang.data.tree.dagger.ReferenceDataTreeFactoryModule;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.spi.source.FileYangTextSource;
 import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
@@ -79,6 +83,11 @@ public final class YangToolsUtils {
             return;
         }
         System.out.println(node.prettyTree().get());
+    }
+
+    public static DataTree newOperationalTree(EffectiveModelContext schemaContext) {
+        DataTreeFactory factory = ReferenceDataTreeFactoryModule.provideDataTreeFactory();
+        return factory.create(DataTreeConfiguration.DEFAULT_OPERATIONAL, schemaContext);
     }
 
 
