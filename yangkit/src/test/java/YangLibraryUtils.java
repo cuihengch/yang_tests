@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-public final class YangLibrary {
+public final class YangLibraryUtils {
 
-    private YangLibrary() {
+    private YangLibraryUtils() {
     }
 
     public static YangSchemaContext newContextFromYangLibraryData(

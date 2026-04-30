@@ -19,78 +19,40 @@ public class AnydataValidationTest {
 
     @Test
     void testPrimitiveTypeAnydata() throws DocumentException, IOException, YangParserException {
-        /* TODO: Heng - if payload is primitive, isn't it not satisfying the RFC? and should be asserted as false?
-            ref: https://www.rfc-editor.org/rfc/rfc7951.html#section-5.5: "It is valid I-JSON"
-         */
-        YangSchemaContext schemaContext = YangkitUtils.loadSchema("../yang/anydata");
-        JsonNode validData = YangkitUtils.loadJson("../data/primitive-anydata.json");
-        ValidatorResult schemaValidation = YangkitUtils.validateSchema(schemaContext);
-        assertTrue(schemaValidation.isOk());
-        ValidatorResult firstDataValidation = YangkitUtils.parsingData(schemaContext, validData);
-        assertTrue(firstDataValidation.isOk());
-        ValidatorResult secondDataValidation = YangkitUtils.validateData(schemaContext, validData);
-        assertTrue(secondDataValidation.isOk());
+        // todo: payload is primitive, invalid - in strict validation of yangkit, why is it succ?
+        YangkitUtils.loadInvalidYangDataDocParseError("../yang/anydata",
+                "../data/anydata/primitive-anydata.json");
     }
 
     @Test
     void testObjectWithSchemaAnydata() throws DocumentException, IOException, YangParserException {
-        YangSchemaContext schemaContext = YangkitUtils.loadSchema("../yang/anydata");
-        JsonNode validData = YangkitUtils.loadJson("../data/object-with-schema-anydata.json");
-        ValidatorResult schemaValidation = YangkitUtils.validateSchema(schemaContext);
-        assertTrue(schemaValidation.isOk());
-        ValidatorResult firstDataValidation = YangkitUtils.parsingData(schemaContext, validData);
-        assertTrue(firstDataValidation.isOk());
-        ValidatorResult secondDataValidation = YangkitUtils.validateData(schemaContext, validData);
-        assertTrue(secondDataValidation.isOk());
+        YangkitUtils.loadValidYangDataDoc("../yang/anydata",
+                "../data/anydata/object-with-schema-anydata.json");
     }
 
     @Test
     void testObjectWithoutSchemaAnydata() throws DocumentException, IOException, YangParserException {
-        YangSchemaContext schemaContext = YangkitUtils.loadSchema("../yang/anydata");
-        JsonNode validData = YangkitUtils.loadJson("../data/object-without-schema-anydata.json");
-        ValidatorResult schemaValidation = YangkitUtils.validateSchema(schemaContext);
-        assertTrue(schemaValidation.isOk());
-        ValidatorResult firstDataValidation = YangkitUtils.parsingData(schemaContext, validData);
-        assertFalse(firstDataValidation.isOk());
-        ValidatorResult secondDataValidation = YangkitUtils.validateData(schemaContext, validData);
-        assertTrue(secondDataValidation.isOk());
+        YangkitUtils.loadInvalidYangDataDocParseError("../yang/anydata",
+                "../data/anydata/object-without-schema-anydata.json");
     }
 
     @Test
     void testPrimitiveAnydataInAnydata()throws DocumentException, IOException, YangParserException {
         // todo: payload is primitive, invalid - in strict validation of yangkit, why is it succ?
-        YangSchemaContext schemaContext = YangkitUtils.loadSchema("../yang/anydata-anydata");
-        JsonNode validData = YangkitUtils.loadJson("../data/primitive-anydata-anydata.json");
-        ValidatorResult schemaValidation = YangkitUtils.validateSchema(schemaContext);
-        assertTrue(schemaValidation.isOk());
-        ValidatorResult firstDataValidation = YangkitUtils.parsingData(schemaContext, validData);
-        assertTrue(firstDataValidation.isOk());
-        ValidatorResult secondDataValidation = YangkitUtils.validateData(schemaContext, validData);
-        assertTrue(secondDataValidation.isOk());
+        YangkitUtils.loadInvalidYangDataDocParseError("../yang/anydata-anydata",
+                "../data/anydata-in-anydata/primitive-anydata.json");
     }
 
     @Test
     void testObjectWithSchemaAnydataInAnydata() throws DocumentException, IOException, YangParserException {
-        YangSchemaContext schemaContext = YangkitUtils.loadSchema("../yang/anydata-anydata");
-        JsonNode validData = YangkitUtils.loadJson("../data/object-with-schema-anydata-anydata.json");
-        ValidatorResult schemaValidation = YangkitUtils.validateSchema(schemaContext);
-        assertTrue(schemaValidation.isOk());
-        ValidatorResult firstDataValidation = YangkitUtils.parsingData(schemaContext, validData);
-        assertTrue(firstDataValidation.isOk());
-        ValidatorResult secondDataValidation = YangkitUtils.validateData(schemaContext, validData);
-        assertTrue(secondDataValidation.isOk());
+        YangkitUtils.loadValidYangDataDoc("../yang/anydata-anydata",
+                "../data/anydata-in-anydata/object-with-schema-anydata-anydata.json");
     }
 
     @Test
     void testObjectWithoutSchemaAnydataInAnydata() throws DocumentException, IOException, YangParserException {
-        YangSchemaContext schemaContext = YangkitUtils.loadSchema("../yang/anydata-anydata");
-        JsonNode validData = YangkitUtils.loadJson("../data/object-without-schema-anydata-anydata.json");
-        ValidatorResult schemaValidation = YangkitUtils.validateSchema(schemaContext);
-        assertTrue(schemaValidation.isOk());
-        ValidatorResult firstDataValidation = YangkitUtils.parsingData(schemaContext, validData);
-        assertFalse(firstDataValidation.isOk());
-        ValidatorResult secondDataValidation = YangkitUtils.validateData(schemaContext, validData);
-        assertTrue(secondDataValidation.isOk());
+        YangkitUtils.loadInvalidYangDataDocParseError("../yang/anydata-anydata",
+                "../data/anydata-in-anydata/object-without-schema-anydata-anydata.json");
     }
 
     @Test
@@ -98,22 +60,8 @@ public class AnydataValidationTest {
         // TODO: Heng - is this actually valid?
         //  RFC 7951 Sec.5.5: "anydata instance is encoded in the same way as a container, i.e., as a name/object pair."
         //  Additionally, "The 'null' value is only allowed in the single-element array '[null]' corresponding to the encoding of the 'empty' type".
-        YangSchemaContext schemaContext = YangkitUtils.loadSchema("../yang/anydata");
-        JsonNode validData = json("""
-            {
-              "data": {
-                "anydata-example:super-container": {
-                  "anydata-example:payload": null
-                }
-              }
-            }
-            """);
-        ValidatorResult schemaValidation = YangkitUtils.validateSchema(schemaContext);
-        assertTrue(schemaValidation.isOk());
-        ValidatorResult firstDataValidation = YangkitUtils.parsingData(schemaContext, validData);
-        assertTrue(firstDataValidation.isOk());
-        ValidatorResult secondDataValidation = YangkitUtils.validateData(schemaContext, validData);
-        assertTrue(secondDataValidation.isOk());
+        YangkitUtils.loadValidYangDataDoc("../yang/anydata",
+                "../data/anydata/null-anydata.json");
     }
 
     /**
@@ -122,82 +70,26 @@ public class AnydataValidationTest {
      */
     @Test
     void testEmptyObjectAnydata() throws Exception {
-        YangSchemaContext schemaContext = YangkitUtils.loadSchema("../yang/anydata");
-        JsonNode validData = json("""
-            {
-              "data": {
-                "anydata-example:super-container": {
-                  "anydata-example:payload": {}
-                }
-              }
-            }
-            """);
-        ValidatorResult schemaValidation = YangkitUtils.validateSchema(schemaContext);
-        assertTrue(schemaValidation.isOk());
-        ValidatorResult firstDataValidation = YangkitUtils.parsingData(schemaContext, validData);
-        assertTrue(firstDataValidation.isOk());
-        ValidatorResult secondDataValidation = YangkitUtils.validateData(schemaContext, validData);
-        assertTrue(secondDataValidation.isOk());
+        YangkitUtils.loadValidYangDataDoc("../yang/anydata",
+                "../data/anydata/empty-object-anydata.json");
     }
 
     @Test
     void testEmptyArrayAnydata() throws Exception {
-        YangSchemaContext schemaContext = YangkitUtils.loadSchema("../yang/anydata");
-        JsonNode validData = json("""
-            {
-              "data": {
-                "anydata-example:super-container": {
-                  "anydata-example:payload": []
-                }
-              }
-            }
-            """);
-        ValidatorResult schemaValidation = YangkitUtils.validateSchema(schemaContext);
-        assertTrue(schemaValidation.isOk());
-        ValidatorResult firstDataValidation = YangkitUtils.parsingData(schemaContext, validData);
-        assertFalse(firstDataValidation.isOk());
-        ValidatorResult secondDataValidation = YangkitUtils.validateData(schemaContext, validData);
-        assertTrue(secondDataValidation.isOk());
+        YangkitUtils.loadInvalidYangDataDocParseError("../yang/anydata",
+                "../data/anydata/empty-array-anydata.json");
     }
 
     @Test
     void testPrimitiveArrayAnydata() throws Exception {
-        YangSchemaContext schemaContext = YangkitUtils.loadSchema("../yang/anydata");
-        JsonNode validData = json("""
-            {
-              "data": {
-                "anydata-example:super-container": {
-                  "anydata-example:payload": [1, 2, 3]
-                }
-              }
-            }
-            """);
-        ValidatorResult schemaValidation = YangkitUtils.validateSchema(schemaContext);
-        assertTrue(schemaValidation.isOk());
-        ValidatorResult firstDataValidation = YangkitUtils.parsingData(schemaContext, validData);
-        assertFalse(firstDataValidation.isOk());
-        ValidatorResult secondDataValidation = YangkitUtils.validateData(schemaContext, validData);
-        assertTrue(secondDataValidation.isOk());
+        YangkitUtils.loadInvalidYangDataDocParseError("../yang/anydata",
+                "../data/anydata/primitive-array-anydata.json");
     }
 
     @Test
     void testObjectArrayAnydata() throws Exception {
-        YangSchemaContext schemaContext = YangkitUtils.loadSchema("../yang/anydata");
-        JsonNode validData = json("""
-            {
-              "data": {
-                "anydata-example:super-container": {
-                  "anydata-example:payload": [{"a": 1}, {"b": 2}]
-                }
-              }
-            }
-            """);
-        ValidatorResult schemaValidation = YangkitUtils.validateSchema(schemaContext);
-        assertTrue(schemaValidation.isOk());
-        ValidatorResult firstDataValidation = YangkitUtils.parsingData(schemaContext, validData);
-        assertFalse(firstDataValidation.isOk());
-        ValidatorResult secondDataValidation = YangkitUtils.validateData(schemaContext, validData);
-        assertTrue(secondDataValidation.isOk());
+        YangkitUtils.loadInvalidYangDataDocParseError("../yang/anydata",
+                "../data/anydata/object-array-anydata.json");
     }
 
     /**
@@ -206,22 +98,8 @@ public class AnydataValidationTest {
      */
     @Test
     void testAnydataCrossModuleIdentityref() throws Exception {
-        YangSchemaContext schemaContext = YangkitUtils.loadSchema("../yang/anydata-identity");
-        JsonNode validData = json("""
-            {
-              "anydata-test:root": {
-                "payload": {
-                  "target-module:type-value": "ext-ident:specific-ident"
-                }
-              }
-            }
-            """);
-        ValidatorResult schemaValidation = YangkitUtils.validateSchema(schemaContext);
-        assertTrue(schemaValidation.isOk());
-        ValidatorResult firstDataValidation = YangkitUtils.parsingData(schemaContext, validData);
-        assertTrue(firstDataValidation.isOk());
-        ValidatorResult secondDataValidation = YangkitUtils.validateData(schemaContext, validData);
-        assertTrue(secondDataValidation.isOk());
+        YangkitUtils.loadValidYangDataDoc("../yang/anydata-identity",
+                "../data/anydata-identity/cross-module-identityref-anydata.json");
     }
 
     /**
@@ -230,25 +108,7 @@ public class AnydataValidationTest {
      */
     @Test
     void testAnydataCrossModuleIdentityrefMissingModule() throws Exception {
-        YangSchemaContext schemaContext = YangkitUtils.loadSchema("../yang/anydata-identity-missing");
-        JsonNode invalidData = json("""
-            {
-              "anydata-test:root": {
-                "payload": {
-                  "target-module:type-value": "non-existed-ext-ident:specific-ident"
-                }
-              }
-            }
-            """);
-        ValidatorResult schemaValidation = YangkitUtils.validateSchema(schemaContext);
-        assertTrue(schemaValidation.isOk());
-
-        ValidatorResult firstDataValidation = YangkitUtils.parsingData(schemaContext, invalidData);
-        assertTrue(firstDataValidation.isOk(), "Data parsing should succeed since structural types match");
-
-        ValidatorResult secondDataValidation = YangkitUtils.validateData(schemaContext, invalidData);
-        // TODO: Heng - why it's true? shouldn't it be false?
-        //  The validation fail because the identityref refers to a module that is not existed.
-        assertFalse(secondDataValidation.isOk(), "Validation should fail because non-existing-ext-ident module is missing");
+        YangkitUtils.loadInvalidYangDataDocParseError("../yang/anydata-identity-missing",
+                "../data/anydata-identity/cross-module-identityref-missing-module-anydata.json");
     }
 }

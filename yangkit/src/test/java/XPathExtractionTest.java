@@ -20,14 +20,8 @@ public class XPathExtractionTest {
 
     @Test
     void minimalXpathTest() throws Exception {
-        YangSchemaContext schemaContext = YangkitUtils.loadSchema("../yang/xpath");
-        JsonNode validData = YangkitUtils.loadJson("../data/xpath-test-valid.json");
-        assertTrue(schemaContext.validate().isOk());
-
-        ValidatorResultBuilder validatorResultBuilder = new ValidatorResultBuilder();
-        YangDataDocument doc =
-                new YangDataDocumentJsonParser(schemaContext)
-                        .parse(validData, validatorResultBuilder);
+        YangDataDocument doc = YangkitUtils.loadValidYangDataDoc("../yang/xpath",
+                "../data/xpath/xpath-test-valid.json");
 
         YangXPathImpl xpath = new YangXPathImpl("/xt:top-container/xt:child-container/xt:value1");
         xpath.addNamespace("xt", "urn:xpath:test");
@@ -38,17 +32,8 @@ public class XPathExtractionTest {
 
     @Test
     void anydataXpathTest() throws Exception {
-        YangSchemaContext schemaContext = YangkitUtils.loadSchema("../yang/xpath");
-        JsonNode validData = YangkitUtils.loadJson("../data/anydata-xpath-test-valid.json");
-        schemaContext.validate();
-
-        ValidatorResultBuilder validatorResultBuilder = new ValidatorResultBuilder();
-        YangDataDocument doc =
-                new YangDataDocumentJsonParser(schemaContext)
-                        .parse(validData, validatorResultBuilder);
-
-        assertTrue(validatorResultBuilder.build().isOk());
-        doc.validate();
+        YangDataDocument doc = YangkitUtils.loadValidYangDataDoc("../yang/xpath",
+                "../data/xpath/anydata-xpath-test-valid.json");
 
         YangXPathImpl xpath = new YangXPathImpl("/xt:anydata-container/xt:child-container/xt:payload/st:system/st:hostname");
         xpath.addNamespace("xt", "urn:xpath:test");
@@ -61,17 +46,8 @@ public class XPathExtractionTest {
 
     @Test
     void structureXpathTest() throws Exception {
-        YangSchemaContext schemaContext = YangkitUtils.loadSchema("../yang/scotthuang-structure");
-        JsonNode validData = YangkitUtils.loadJson("../data/scotthuang_valid_structure_message.json");
-        schemaContext.validate();
-
-        ValidatorResultBuilder validatorResultBuilder = new ValidatorResultBuilder();
-        YangDataDocument doc =
-                new YangDataDocumentJsonParser(schemaContext)
-                        .parse(validData, validatorResultBuilder);
-
-        assertTrue(validatorResultBuilder.build().isOk());
-        doc.validate();
+        YangDataDocument doc = YangkitUtils.loadValidYangDataDoc("../yang/xpath-structure",
+                "../data/xpath-structure/scotthuang_valid_structure_message.json");
 
         YangXPathImpl xpath = new YangXPathImpl("/ts:payload/ts:content");
         xpath.addNamespace("ts", "urn:example:test-structure");
@@ -83,22 +59,8 @@ public class XPathExtractionTest {
 
     @Test
     void nonExistentXpathTest() throws Exception {
-        YangSchemaContext schemaContext = YangkitUtils.loadSchema("../yang/scotthuang-structure");
-        schemaContext.validate();
-        JsonNode validData = json("""
-            {
-              "test-structure:message": {
-                "metadata": {
-                  "timestamp": "2025-03-05T10:30:00.000Z",
-                  "source": "router-01.example.com"
-                },
-                "payload": {}
-              }
-            }
-            """);
-
-        ValidatorResultBuilder validatorResultBuilder = new ValidatorResultBuilder();
-        YangDataDocument doc = new YangDataDocumentJsonParser(schemaContext).parse(validData, validatorResultBuilder);
+        YangDataDocument doc = YangkitUtils.loadValidYangDataDoc("../yang/xpath-structure",
+                "../data/xpath-structure/non-existent-xpath.json");
 
         // XPath pointing to a leaf that does not exist in the data tree
         YangXPathImpl xpath = new YangXPathImpl("/ts:message/ts:metadata/ts:non-existent-leaf");

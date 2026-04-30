@@ -11,6 +11,7 @@ import org.yangcentral.yangkit.parser.YangParser;
 import org.yangcentral.yangkit.parser.YangParserEnv;
 import org.yangcentral.yangkit.parser.YangParserException;
 import org.yangcentral.yangkit.parser.YangYinParser;
+import org.yangcentral.yangkit.register.YangStatementImplRegister;
 import org.yangcentral.yangkit.xpath.impl.YangXPathImpl;
 
 // TODO: Heng - there're unused imports, it would be great to clean them up.
@@ -26,7 +27,9 @@ public class ModuleInspectionTest {
 
     @Test
     void testInspectModuleVersion() throws IOException, YangParserException {
-        String yang = "../yang/schema-test.yang";
+        YangStatementImplRegister.registerImpl();
+
+        String yang = "../yang/schema-validation/valid-schema-test.yang";
 
         // Initialize a parser like it's done in YinYangParser.parse
         YangParser parser = new YangParser();

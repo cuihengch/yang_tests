@@ -1,0 +1,10 @@
+module invalid-schema-test {
+  yang-version 1.1;
+  namespace "urn:invalid-schema-test";
+  prefix ist;
+
+  container system {
+    lea hostname { type string; }
+    leaf port { type uint16; }
+  }
+}

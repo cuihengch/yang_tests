@@ -13,22 +13,13 @@ public class NotifEnvelopeTest {
 
     @Test
     void testValidNotifEnvelope() throws DocumentException, IOException, YangParserException {
-        YangSchemaContext schemaContext = YangkitUtils.loadSchema("../yang/notif");
-        JsonNode validData = YangkitUtils.loadJson("../data/valid_notification.json");
-        ValidatorResult schemaValidation = YangkitUtils.validateSchema(schemaContext);
-        assertTrue(schemaValidation.isOk());
-        ValidatorResult firstDataValidation = YangkitUtils.parsingData(schemaContext, validData);
-        assertTrue(firstDataValidation.isOk());
-        ValidatorResult secondDataValidation = YangkitUtils.validateData(schemaContext, validData);
-        assertTrue(secondDataValidation.isOk());
+        YangkitUtils.loadValidYangDataDoc("../yang/notif",
+                "../data/notif/valid-notification.json");
     }
 
     @Test
     void testInvalidNotifEnvelope() throws DocumentException, IOException, YangParserException {
-        YangSchemaContext schemaContext = YangkitUtils.loadSchema("../yang/notif");
-        JsonNode validData = YangkitUtils.loadJson("../data/invalid_notification.json");
-        ValidatorResult schemaValidation = YangkitUtils.validateSchema(schemaContext);
-        assertTrue(schemaValidation.isOk());
-        assertThrows(Exception.class, () -> YangkitUtils.parsingData(schemaContext, validData));
+        YangkitUtils.loadInvalidYangDataDocParseError("../yang/notif",
+                "../data/notif/invalid-notification.json");
     }
 }

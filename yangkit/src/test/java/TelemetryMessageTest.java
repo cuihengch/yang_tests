@@ -14,40 +14,20 @@ public class TelemetryMessageTest {
 
     @Test
     void testValidTelemetryMsgNetGauze() throws DocumentException, IOException, YangParserException {
-        YangSchemaContext schemaContext = YangkitUtils.loadSchema("../yang/telemetry");
-        JsonNode validData = YangkitUtils.loadJson("../data/valid-telemetry-msg-netgauze.json");
-        ValidatorResult schemaValidation = YangkitUtils.validateSchema(schemaContext);
-        assertTrue(schemaValidation.isOk());
-        ValidatorResult firstDataValidation = YangkitUtils.parsingData(schemaContext, validData);
-        assertTrue(firstDataValidation.isOk());
-        ValidatorResult secondDataValidation = YangkitUtils.validateData(schemaContext, validData);
-        assertTrue(secondDataValidation.isOk());
+        YangkitUtils.loadValidYangDataDoc("../yang/telemetry",
+                "../data/telemetry/valid-telemetry-msg-netgauze.json");
     }
 
     @Test
     void testValidTelemetryMsgPMACCT() throws DocumentException, IOException, YangParserException {
-        YangSchemaContext schemaContext = YangkitUtils.loadSchema("../yang/telemetry");
-        JsonNode validData = YangkitUtils.loadJson("../data/valid-telemetry-msg-pmacct.json");
-        ValidatorResult schemaValidation = YangkitUtils.validateSchema(schemaContext);
-        assertTrue(schemaValidation.isOk());
-        ValidatorResult firstDataValidation = YangkitUtils.parsingData(schemaContext, validData);
-        for(var r : firstDataValidation.getRecords()){
-            if(r.getSeverity().toString().equals("ERROR")){
-                System.out.println(r.getBadElement() + "--> " + r.getErrorMsg().getMessage());
-            }
-        }
-        assertTrue(firstDataValidation.isOk());
-        ValidatorResult secondDataValidation = YangkitUtils.validateData(schemaContext, validData);
-        assertTrue(secondDataValidation.isOk());
+        YangkitUtils.loadValidYangDataDoc("../yang/telemetry",
+                "../data/telemetry/valid-telemetry-msg-pmacct.json");
     }
 
     @Test
     void testInvalidTelemetryMsg() throws DocumentException, IOException, YangParserException {
-        YangSchemaContext schemaContext = YangkitUtils.loadSchema("../yang/telemetry");
-        JsonNode validData = YangkitUtils.loadJson("../data/invalid-telemetry-msg.json");
-        ValidatorResult schemaValidation = YangkitUtils.validateSchema(schemaContext);
-        assertTrue(schemaValidation.isOk());
-        assertThrows(Exception.class, () -> YangkitUtils.parsingData(schemaContext, validData));
+        YangkitUtils.loadInvalidYangDataDocParseError("../yang/telemetry",
+                "../data/telemetry/invalid-telemetry-msg.json");
     }
 
 }

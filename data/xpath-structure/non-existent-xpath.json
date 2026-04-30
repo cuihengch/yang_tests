@@ -1,0 +1,9 @@
+{
+    "test-structure:message": {
+        "metadata": {
+            "timestamp": "2025-03-05T10:30:00.000Z",
+            "source": "router-01.example.com"
+        },
+        "payload": {}
+    }
+}

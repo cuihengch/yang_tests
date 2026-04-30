@@ -27,21 +27,9 @@ public class YangTransformationTest {
 
     @Test
     void addValueTest() throws Exception {
-        YangSchemaContext schemaContext = YangkitUtils.loadSchema("../yang/yang-transformation.yang");
-        JsonNode validData = YangkitUtils.loadJson("../data/yang_transformation.json");
-
-        ValidatorResult schemaValidation = YangkitUtils.validateSchema(schemaContext);
-        assertTrue(schemaValidation.isOk());
-        ValidatorResult firstDataValidation = YangkitUtils.parsingData(schemaContext, validData);
-        assertTrue(firstDataValidation.isOk());
-        ValidatorResult secondDataValidation = YangkitUtils.validateData(schemaContext, validData);
-        assertTrue(secondDataValidation.isOk());
-
-        YangDataDocument doc =
-                new YangDataDocumentJsonParser(schemaContext)
-                        .parse(validData, new ValidatorResultBuilder());
-        doc.validate();
-        doc.update();
+        YangSchemaContext context = YangkitUtils.loadValidSchema("../yang/yang-transformation");
+        YangDataDocument doc = YangkitUtils.loadValidYangDataDoc(context,
+                "../data/yang-transformation/yang_transformation.json");
 
         AbsolutePath absolutePath = new AbsolutePath();
         absolutePath.addStep(new XPathStep(new QName("urn:yang:transformation","foo")));
@@ -49,7 +37,7 @@ public class YangTransformationTest {
         var leaf = doc.getSchemaContext().getSchemaNode(absolutePath);
 
         var schemaNode = new LeafImpl("num");
-        schemaNode.setContext(schemaContext.getModules().getFirst().getContext());
+        schemaNode.setContext(context.getModules().getFirst().getContext());
 
         var type = ((TypedDataNodeImpl)leaf).getType();
         schemaNode.setType(type);
@@ -65,11 +53,6 @@ public class YangTransformationTest {
         var container = (ContainerDataImpl) doc.getDataChild(YangkitUtils.getIdentifier("urn:yang:transformation", "foo"));
 
         container.addChild(leafNode);
-
-
-
-        doc.validate();
-        doc.update();
 
         YangXPathImpl xpath = new YangXPathImpl("/yt:foo/yt:num");
         xpath.addNamespace("yt", "urn:yang:transformation");
@@ -83,21 +66,9 @@ public class YangTransformationTest {
 
     @Test
     void updateValueTest() throws Exception {
-        YangSchemaContext schemaContext = YangkitUtils.loadSchema("../yang/yang-transformation.yang");
-        JsonNode validData = YangkitUtils.loadJson("../data/yang_transformation.json");
-
-        ValidatorResult schemaValidation = YangkitUtils.validateSchema(schemaContext);
-        assertTrue(schemaValidation.isOk());
-        ValidatorResult firstDataValidation = YangkitUtils.parsingData(schemaContext, validData);
-        assertTrue(firstDataValidation.isOk());
-        ValidatorResult secondDataValidation = YangkitUtils.validateData(schemaContext, validData);
-        assertTrue(secondDataValidation.isOk());
-
-        YangDataDocument doc =
-                new YangDataDocumentJsonParser(schemaContext)
-                        .parse(validData, new ValidatorResultBuilder());
-        doc.validate();
-        doc.update();
+        YangSchemaContext context = YangkitUtils.loadValidSchema("../yang/yang-transformation");
+        YangDataDocument doc = YangkitUtils.loadValidYangDataDoc(context,
+                "../data/yang-transformation/yang_transformation.json");
 
         AbsolutePath absolutePath = new AbsolutePath();
         absolutePath.addStep(new XPathStep(new QName("urn:yang:transformation","foo")));
@@ -105,7 +76,7 @@ public class YangTransformationTest {
         var leaf = doc.getSchemaContext().getSchemaNode(absolutePath);
 
         var schemaNode = new LeafImpl("value-to-update");
-        schemaNode.setContext(schemaContext.getModules().getFirst().getContext());
+        schemaNode.setContext(context.getModules().getFirst().getContext());
 
         var type = ((TypedDataNodeImpl)leaf).getType();
         schemaNode.setType(type);
@@ -121,10 +92,6 @@ public class YangTransformationTest {
         var container = (ContainerDataImpl) doc.getDataChild(YangkitUtils.getIdentifier("urn:yang:transformation", "foo"));
 
         container.addChild(leafNode);
-
-
-        doc.validate();
-        doc.update();
 
         YangXPathImpl xpath = new YangXPathImpl("/yt:foo/yt:value-to-update");
         xpath.addNamespace("yt", "urn:yang:transformation");

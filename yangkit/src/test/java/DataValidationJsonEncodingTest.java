@@ -18,136 +18,53 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DataValidationJsonEncodingTest {
 
-    private JsonNode json(String rawJson) throws Exception {
-        return new ObjectMapper().readTree(rawJson);
-    }
-
-    /**
-     * Heng:
-     *     1. for these two test cases, they are covering the case of port as
-     *     numeric v.s. string. it might be also good to test the case for
-     *     hostname as string v.s. numeric.
-     *     2. for port 70000, it's only tested for string v.s. numeric, it would
-     *     be also useful to test 70000 port as numeric to see whether it's
-     *     violate its bounds, e.g. max as 65535 (2^16 - 1)
-     * two more testcases are added below
-      */
-
     @Test
     void testValidJsonValidation() throws DocumentException, IOException, YangParserException {
-        YangSchemaContext schemaContext = YangkitUtils.loadSchema("../yang/schema-test.yang");
-        JsonNode validData = YangkitUtils.loadJson("../data/valid.json");
-        ValidatorResult schemaValidation = YangkitUtils.validateSchema(schemaContext);
-        assertTrue(schemaValidation.isOk());
-        ValidatorResult firstDataValidation = YangkitUtils.parsingData(schemaContext, validData);
-        assertTrue(firstDataValidation.isOk());
-        ValidatorResult secondDataValidation = YangkitUtils.validateData(schemaContext, validData);
-        assertTrue(secondDataValidation.isOk());
+        YangkitUtils.loadValidYangDataDoc("../yang/data-validation/data-validation-test.yang",
+                "../data/data-validation/data-validation-test-valid.json");
     }
 
     @Test
     void testInvalidJsonValidation() throws DocumentException, IOException, YangParserException {
-        YangSchemaContext schemaContext = YangkitUtils.loadSchema("../yang/schema-test.yang");
-        JsonNode invalidData = YangkitUtils.loadJson("../data/invalid.json");
-        ValidatorResult schemaValidation = YangkitUtils.validateSchema(schemaContext);
-        assertTrue(schemaValidation.isOk());
-        ValidatorResult firstDataValidation = YangkitUtils.parsingData(schemaContext, invalidData);
-        assertFalse(firstDataValidation.isOk());
-        ValidatorResult secondDataValidation = YangkitUtils.validateData(schemaContext, invalidData);
-        assertTrue(secondDataValidation.isOk());
+        YangkitUtils.loadInvalidYangDataDocParseError("../yang/data-validation/data-validation-test.yang",
+                "../data/data-validation/data-validation-test-invalid-string-validation.json");
     }
 
     @Test
     void testHostnameNumericValidation() throws Exception {
-        YangSchemaContext schemaContext = YangkitUtils.loadSchema("../yang/schema-test.yang");
-        ValidatorResult schemaValidation = YangkitUtils.validateSchema(schemaContext);
-        assertTrue(schemaValidation.isOk());
-
-        JsonNode invalidData = json("""
-            {
-              "schema-test:system": {
-                "hostname": 12345,
-                "port": 830
-              }
-            }
-            """);
-
-        ValidatorResult firstDataValidation = YangkitUtils.parsingData(schemaContext, invalidData);
-        assertFalse(firstDataValidation.isOk());
-
-        ValidatorResult secondDataValidation = YangkitUtils.validateData(schemaContext, invalidData);
-        assertTrue(secondDataValidation.isOk());
+        YangkitUtils.loadInvalidYangDataDocParseError("../yang/data-validation/data-validation-test.yang",
+                "../data/data-validation/data-validation-test-invalid-num-validation.json");
     }
 
     @Test
     void testPortOutOfBoundsValidation() throws Exception {
-        YangSchemaContext schemaContext = YangkitUtils.loadSchema("../yang/schema-test.yang");
-        ValidatorResult schemaValidation = YangkitUtils.validateSchema(schemaContext);
-        assertTrue(schemaValidation.isOk());
+        YangkitUtils.loadInvalidYangDataDocParseError("../yang/data-validation/data-validation-test.yang",
+                "../data/data-validation/data-validation-test-invalid-out-of-bounds.json");
 
-        JsonNode invalidData = json("""
-            {
-              "schema-test:system": {
-                "hostname": "router1",
-                "port": 70000
-              }
-            }
-            """);
-
-        // TODO: Heng - is it better to detect it from firstDataValidation.isOk() == false?
-        assertThrows(Exception.class, () -> {
-            YangkitUtils.parsingData(schemaContext, invalidData);
-        }, "Port 70000 out of bounds should throw an exception during parsing");
     }
 
     @Test
     void testMissingMandatoryValidation() throws DocumentException, IOException, YangParserException {
-        YangSchemaContext schemaContext = YangkitUtils.loadSchema("../yang/mandatory-test.yang");
-        JsonNode invalidData = YangkitUtils.loadJson("../data/missing.json");
-        ValidatorResult schemaValidation = YangkitUtils.validateSchema(schemaContext);
-        assertTrue(schemaValidation.isOk());
-        ValidatorResult firstDataValidation = YangkitUtils.parsingData(schemaContext, invalidData);
-        assertTrue(firstDataValidation.isOk());
-        ValidatorResult secondDataValidation = YangkitUtils.validateData(schemaContext, invalidData);
-        assertFalse(secondDataValidation.isOk());
+        YangkitUtils.loadInvalidYangDataDocValidateError("../yang/mandatory-validation/mandatory-test.yang",
+                "../data/mandatory-validation/missing.json");
     }
 
     @Test
     void testValidMustValidation() throws DocumentException, IOException, YangParserException {
-        YangSchemaContext schemaContext = YangkitUtils.loadSchema("../yang/must-test.yang");
-        JsonNode validData = YangkitUtils.loadJson("../data/valid-must.json");
-        ValidatorResult schemaValidation = YangkitUtils.validateSchema(schemaContext);
-        assertTrue(schemaValidation.isOk());
-        ValidatorResult firstDataValidation = YangkitUtils.parsingData(schemaContext, validData);
-        assertTrue(firstDataValidation.isOk());
-        ValidatorResult secondDataValidation = YangkitUtils.validateData(schemaContext, validData);
-        assertTrue(secondDataValidation.isOk());
+        YangkitUtils.loadValidYangDataDoc("../yang/must-validation/must-test.yang",
+                "../data/must-validation/valid-must.json");
     }
 
     @Test
     void testValidMustValidation2() throws DocumentException, IOException, YangParserException {
-        YangSchemaContext schemaContext = YangkitUtils.loadSchema("../yang/must-test.yang");
-        JsonNode validData = YangkitUtils.loadJson("../data/valid-must-2.json");
-        ValidatorResult schemaValidation = YangkitUtils.validateSchema(schemaContext);
-        assertTrue(schemaValidation.isOk());
-        ValidatorResult firstDataValidation = YangkitUtils.parsingData(schemaContext, validData);
-        assertTrue(firstDataValidation.isOk());
-        ValidatorResult secondDataValidation = YangkitUtils.validateData(schemaContext, validData);
-        assertTrue(secondDataValidation.isOk());
+        YangkitUtils.loadValidYangDataDoc("../yang/must-validation/must-test.yang",
+                "../data/must-validation/valid-must-2.json");
     }
 
     @Test
     void testInvalidMustValidation() throws DocumentException, IOException, YangParserException {
-        YangSchemaContext schemaContext = YangkitUtils.loadSchema("../yang/must-test.yang");
-        JsonNode invalidData = YangkitUtils.loadJson("../data/invalid-must.json");
-        ValidatorResult schemaValidation = YangkitUtils.validateSchema(schemaContext);
-        assertTrue(schemaValidation.isOk());
-        ValidatorResultBuilder firstDataValidationBuilder = new ValidatorResultBuilder();
-        YangDataDocument yangDataDocument = new YangDataDocumentJsonParser(schemaContext).parse(invalidData, firstDataValidationBuilder);
-        assertTrue(firstDataValidationBuilder.build().isOk());
-        yangDataDocument.update();
-        ValidatorResult secondDataValidation = yangDataDocument.validate();
-        assertFalse(secondDataValidation.isOk());
+        YangkitUtils.loadInvalidYangDataDocValidateError("../yang/must-validation/must-test.yang",
+                "../data/must-validation/invalid-must.json");
     }
 
 }

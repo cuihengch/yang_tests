@@ -1,0 +1,7 @@
+{
+  "anydata-test:root": {
+    "payload": {
+      "target-module:type-value": "non-existed-ext-ident:specific-ident"
+    }
+  }
+}

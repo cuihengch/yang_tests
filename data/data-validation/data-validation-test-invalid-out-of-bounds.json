@@ -1,0 +1,6 @@
+{
+  "data-validation-test:system": {
+    "hostname": "router1",
+    "port": 70000
+  }
+}
