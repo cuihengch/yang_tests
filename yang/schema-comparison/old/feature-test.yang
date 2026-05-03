@@ -1,0 +1,96 @@
+module feature-test {
+  yang-version 1.1;
+  namespace "urn:test:feature";
+  prefix ft;
+
+  revision 2026-04-29 {
+    description
+      "Old revision used for schema comparison tests.";
+  }
+
+  container root {
+    description
+      "Root container for schema comparison.";
+
+    leaf id {
+      type string;
+      mandatory true;
+      description
+        "Stable identifier.";
+    }
+
+    leaf old-value {
+      type string;
+      description
+        "This leaf exists only in the old schema.";
+    }
+
+    leaf advanced-value {
+      type string;
+      mandatory false;
+      description
+        "This leaf becomes mandatory in the new schema.";
+    }
+
+    leaf mode {
+      type enumeration {
+        enum basic;
+        enum advanced;
+      }
+      default "basic";
+      description
+        "This leaf has a default value that changes.";
+    }
+
+    leaf threshold {
+      type uint16 {
+        range "1..100";
+      }
+      default "10";
+      description
+        "This leaf has a type restriction that changes.";
+    }
+
+    leaf state {
+      config false;
+      type string;
+      description
+        "This leaf changes from config false to config true.";
+    }
+
+    leaf conditional-value {
+      when "../mode = 'advanced'";
+      type string;
+      description
+        "This leaf has a when condition that changes.";
+    }
+
+    container settings {
+      presence "Enable settings.";
+
+      must "enabled = 'true'" {
+        error-message
+          "Settings must be enabled.";
+      }
+
+      leaf enabled {
+        type boolean;
+        default "false";
+      }
+    }
+
+    list item {
+      key "name";
+      min-elements 0;
+      max-elements 10;
+
+      leaf name {
+        type string;
+      }
+
+      leaf value {
+        type string;
+      }
+    }
+  }
+}
