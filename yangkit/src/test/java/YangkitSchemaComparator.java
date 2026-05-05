@@ -249,20 +249,12 @@ public final class YangkitSchemaComparator {
             return Compatibility.NON_BACKWARD_COMPATIBLE;
         }
 
-        if (oldValue && !newValue) {
-            return Compatibility.BACKWARD_COMPATIBLE;
-        }
-
         return Compatibility.BACKWARD_COMPATIBLE;
     }
 
     private static Compatibility compatibilityForConfigChange(boolean oldValue, boolean newValue) {
         if (oldValue && !newValue) {
             return Compatibility.NON_BACKWARD_COMPATIBLE;
-        }
-
-        if (!oldValue && newValue) {
-            return Compatibility.BACKWARD_COMPATIBLE;
         }
 
         return Compatibility.BACKWARD_COMPATIBLE;
@@ -277,10 +269,6 @@ public final class YangkitSchemaComparator {
             return Compatibility.NON_BACKWARD_COMPATIBLE;
         }
 
-        if (newValue < oldValue) {
-            return Compatibility.BACKWARD_COMPATIBLE;
-        }
-
         return Compatibility.BACKWARD_COMPATIBLE;
     }
 
@@ -291,10 +279,6 @@ public final class YangkitSchemaComparator {
 
         if (newValue < oldValue) {
             return Compatibility.NON_BACKWARD_COMPATIBLE;
-        }
-
-        if (newValue > oldValue) {
-            return Compatibility.BACKWARD_COMPATIBLE;
         }
 
         return Compatibility.BACKWARD_COMPATIBLE;
